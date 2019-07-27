@@ -70,30 +70,85 @@ async function init() {
     d3.select(this).style('stroke','');
   }
 
-  var handleClick
-  d3.select('svg')
-    .append('g')
-    .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
-    .selectAll('circle')
-    .data(data)
-    .enter()
-    .append('circle')
-    .filter(function(d) {return d.Year == 2016;})
-    .filter(function(d) {return d.Population > 0;})
-    .attr('cx',function(d) {return xScale(+d.PercUsingInternet);})
-    .attr('cy',function(d) {return yScale(+d.InnovationsPerThousand);})
-    .attr('r',function(d) {return rScale(+d.Population);})
-    .style('fill',function(d) {return dataColor(d.IncomeGroup);})
-    .on("mouseover",changeStrokeOnHover)
-    .on("mouseout",changeBackStroke);
-  d3.select('svg')
-    .append('g')
-    .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
-    .call(d3.axisLeft(yScale));
-  d3.select('svg')
-    .append('g')
-    .attr('transform','translate(' + translateOrigin+ ',' + xScaleHorPos +')')
-    .call(d3.axisBottom(xScale));
+  var selectedInd = 0;
+
+  var handleClick = function(d) {
+    
+    var curOp = d3.select(this).style('opacity');
+    console.log(selectedInd);
+    var curYear = d.Year;
+    var curCountry = d.CountryName;
+
+    if (selectedInd == 0) {
+      d3.selectAll('circle').style('opacity',0.05);
+      buildChartFromData(2100,curCountry);
+      d3.select(this).style('opacity',0.95);
+      selectedInd = 1;
+    } else {
+      d3.selectAll("svg > *").remove();
+      buildChartFromData(curYear,'');
+      selectedInd = 0;  
+    }
+  }
+
+  var buildChartFromData = function(year=2100,country=''){
+
+    if (country > '') {
+      d3.select('svg')
+        .append('g')
+        .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+        .selectAll('circle')
+        .data(data)
+        .enter()
+        .append('circle')
+        .filter(function(d) {return d.CountryName == country;})
+        .filter(function(d) {return d.Population > 0;})
+        .attr('cx',function(d) {return xScale(+d.PercUsingInternet);})
+        .attr('cy',function(d) {return yScale(+d.InnovationsPerThousand);})
+        .attr('r',function(d) {if (rScale(+d.Population) > 10) { return 10;} else { return rScale(+d.Population);}})
+        .style('fill',function(d) {return dataColor(d.IncomeGroup);})
+        .on("mouseover",changeStrokeOnHover)
+        .on("mouseout",changeBackStroke)
+        .on("click",handleClick);
+      d3.select('svg')
+        .append('g')
+        .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+        .call(d3.axisLeft(yScale));
+      d3.select('svg')
+        .append('g')
+        .attr('transform','translate(' + translateOrigin+ ',' + xScaleHorPos +')')
+        .call(d3.axisBottom(xScale));      
+    }
+
+    if (year != 2100) {
+      d3.select('svg')
+        .append('g')
+        .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+        .selectAll('circle')
+        .data(data)
+        .enter()
+        .append('circle')
+        .filter(function(d) {return d.Year == year;})
+        .filter(function(d) {return d.Population > 0;})
+        .attr('cx',function(d) {return xScale(+d.PercUsingInternet);})
+        .attr('cy',function(d) {return yScale(+d.InnovationsPerThousand);})
+        .attr('r',function(d) {return rScale(+d.Population);})
+        .style('fill',function(d) {return dataColor(d.IncomeGroup);})
+        .on("mouseover",changeStrokeOnHover)
+        .on("mouseout",changeBackStroke)
+        .on("click",handleClick);
+      d3.select('svg')
+        .append('g')
+        .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+        .call(d3.axisLeft(yScale));
+      d3.select('svg')
+        .append('g')
+        .attr('transform','translate(' + translateOrigin+ ',' + xScaleHorPos +')')
+        .call(d3.axisBottom(xScale));      
+    }
+  }
+
+  buildChartFromData(1993,'');
 }
 </script>
 </body>
