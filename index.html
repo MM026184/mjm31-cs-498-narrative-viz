@@ -44,13 +44,12 @@
 <svg id="svg1"></svg>
 <script>
 async function init() {
-  const data = await d3.csv('https://flunky.github.io/cars2017.csv');
+  const data = await d3.csv('https://github.com/MM026184/mjm31-cs-498-narrative-viz/blob/master/files/internet_clean_data.csv');
   console.log(data);
   var svg1 = document.getElementById('svg1');
-  var bBox = svg1.getBBox();
   console.log('client', svg1.clientWidth + 'x' + svg1.clientHeight);
-  var xScale = d3.scaleLog().domain([10,150]).range([0,svg1.clientWidth-100]);
-  var yScale = d3.scaleLog().domain([10,150]).range([svg1.clientHeight-100,0]);
+  var xScale = d3.scaleLinear().domain([0,100]).range([0,svg1.clientWidth-100]);
+  var yScale = d3.scaleLinear().domain([0,6]).range([svg1.clientHeight-100,0]);
   var xScaleHorPos = svg1.clientHeight-50
   console.log(yScale);
   d3.select('svg')
