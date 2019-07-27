@@ -1,4 +1,4 @@
-Country Name,Country Code,Year,"Population, total","GNI per capita, Atlas method (current US$)",Scientific and technical journal articles,"Industrial design applications, resident, by count","Patent applications, residents",Innovations Per Capita,Individuals using the Internet (% of population),Income Group
+Country Name,Country Code,Year,Population,GNIperCaptia,JournalArticles,IndustrialDesigns,PatentApps,InnovationsPerCapita,PercUsingInternet,IncomeGroup
 Afghanistan,AFG,1993,15816603,,,,,0.000000000000000,,Low income
 Afghanistan,AFG,1994,17075727,,,,,0.000000000000000,,Low income
 Afghanistan,AFG,1995,18110657,,,,,0.000000000000000,,Low income

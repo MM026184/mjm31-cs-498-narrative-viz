@@ -10,16 +10,28 @@
 
     <title>Hello, world!</title>
   </head>
-  <body>
-    <h1>Hello, world!</h1>
-
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    
+    <!-- D3 -->
+    <script src='https://d3js.org/d3.v5.min.js'></script>
+    <style> 
+      circle {fill: lightblue; stroke: black;} 
+      body {background:#eee; 
+            margin:0; 
+            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            font-size: 10px;
+            color: #333;}
+      #svg1 {
+      display:block; border:1px solid #ccc; position:absolute;
+      top:5%; left:5%; width:90%; height:90%; background:#fff;
+      }
+      h1 {
+        text-align: center;
+      }
+    </style>
     <!-- The narrative visualization should be built with scenes, annotations, parameters, and triggers. -->
 
     <!-- The scenes should follow a template for visual consistency and follow an order to best convey the message. One way to implement different scenes is to make each a separate web page. Another way is to use d3.select(id).html = "" to clear the contents of a container element (e.g. an SVG element) and then repopulate that element using .append().
@@ -27,5 +39,39 @@
     The parameters are the state variables of your narrative visualization. Your narrative visualization should use these parameters to control the construction of scenes. These parameters will be key variables in your JavaScript code, as well as parameters to key functions used to set up each scene.
     The triggers connect user interface actions to changes in parameters that change the state of the narrative visualization. These triggers can be event listeners (callback functions) that change parameter values and then update the display to reflect the result of the event.-->   
 
-  </body>
+<body onload='init()'>
+<h1>Hello, world!</h1>  
+<svg id="svg1"></svg>
+<script>
+async function init() {
+  const data = await d3.csv('https://flunky.github.io/cars2017.csv');
+  console.log(data);
+  var svg1 = document.getElementById('svg1');
+  var bBox = svg1.getBBox();
+  console.log('client', svg1.clientWidth + 'x' + svg1.clientHeight);
+  var xScale = d3.scaleLog().domain([10,150]).range([0,svg1.clientWidth-100]);
+  var yScale = d3.scaleLog().domain([10,150]).range([svg1.clientHeight-100,0]);
+  var xScaleHorPos = svg1.clientHeight-50
+  console.log(yScale);
+  d3.select('svg')
+    .append('g')
+    .attr('transform','translate(50,50)')
+    .selectAll('circle')
+    .data(data)
+    .enter()
+    .append('circle')
+    .attr('cx',function(d) {return xScale(+d.AverageCityMPG);})
+    .attr('cy',function(d) {return yScale(+d.AverageHighwayMPG);})
+    .attr('r',function(d) { return +d.EngineCylinders + 2;});
+  d3.select('svg')
+    .append('g')
+    .attr('transform','translate(50,50)')
+    .call(d3.axisLeft(yScale).tickValues([10,20,50,100]).tickFormat(d3.format('~s')));
+  d3.select('svg')
+    .append('g')
+    .attr('transform','translate(50,' + xScaleHorPos +')')
+    .call(d3.axisBottom(xScale).tickValues([10,20,50,100]).tickFormat(d3.format('~s')));
+}
+</script>
+</body>
 </html>
