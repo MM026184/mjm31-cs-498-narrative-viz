@@ -18,7 +18,7 @@
     <!-- D3 -->
     <script src='https://d3js.org/d3.v5.min.js'></script>
     <style> 
-      circle {fill: lightblue; stroke: black;} 
+      circle {opacity: 0.65;} 
       body {background:#eee; 
             margin:0; 
             font-family: "Helvetica Neue", Helvetica, sans-serif;
@@ -44,32 +44,56 @@
 <svg id="svg1"></svg>
 <script>
 async function init() {
-  const data = await d3.csv('https://github.com/MM026184/mjm31-cs-498-narrative-viz/blob/master/files/internet_clean_data.csv');
+  const data = await d3.csv('https://mm026184.github.io/mjm31-cs-498-narrative-viz/files/internet_clean_data.csv');
   console.log(data);
   var svg1 = document.getElementById('svg1');
+
+  var translateOrigin = 100;
+
   console.log('client', svg1.clientWidth + 'x' + svg1.clientHeight);
-  var xScale = d3.scaleLinear().domain([0,100]).range([0,svg1.clientWidth-100]);
-  var yScale = d3.scaleLinear().domain([0,6]).range([svg1.clientHeight-100,0]);
-  var xScaleHorPos = svg1.clientHeight-50
-  console.log(yScale);
+  var xScale = d3.scaleLinear().domain([0,100]).range([0,svg1.clientWidth-(translateOrigin+50)]);
+  var yScale = d3.scaleLinear().domain([0,6]).range([svg1.clientHeight-(translateOrigin+100),0]);
+  var rScale = d3.scaleSqrt().domain([9000,1378665000]).range([2,50]); 
+
+  var xScaleHorPos = svg1.clientHeight-translateOrigin;
+
+  // Add a scale for bubble color
+  var dataColor = d3.scaleOrdinal()
+    .domain(['Low income','Lower middle income','Upper middle income','High income'])
+    .range(['#8f5bc8','#fe4a46','#f19300','#4c6800']);
+
+  var changeStrokeOnHover = function() {
+    d3.select(this).style('stroke','black');
+  }
+
+  var changeBackStroke = function() {
+    d3.select(this).style('stroke','');
+  }
+
+  var handleClick
   d3.select('svg')
     .append('g')
-    .attr('transform','translate(50,50)')
+    .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
     .selectAll('circle')
     .data(data)
     .enter()
     .append('circle')
-    .attr('cx',function(d) {return xScale(+d.AverageCityMPG);})
-    .attr('cy',function(d) {return yScale(+d.AverageHighwayMPG);})
-    .attr('r',function(d) { return +d.EngineCylinders + 2;});
+    .filter(function(d) {return d.Year == 2016;})
+    .filter(function(d) {return d.Population > 0;})
+    .attr('cx',function(d) {return xScale(+d.PercUsingInternet);})
+    .attr('cy',function(d) {return yScale(+d.InnovationsPerThousand);})
+    .attr('r',function(d) {return rScale(+d.Population);})
+    .style('fill',function(d) {return dataColor(d.IncomeGroup);})
+    .on("mouseover",changeStrokeOnHover)
+    .on("mouseout",changeBackStroke);
   d3.select('svg')
     .append('g')
-    .attr('transform','translate(50,50)')
-    .call(d3.axisLeft(yScale).tickValues([10,20,50,100]).tickFormat(d3.format('~s')));
+    .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+    .call(d3.axisLeft(yScale));
   d3.select('svg')
     .append('g')
-    .attr('transform','translate(50,' + xScaleHorPos +')')
-    .call(d3.axisBottom(xScale).tickValues([10,20,50,100]).tickFormat(d3.format('~s')));
+    .attr('transform','translate(' + translateOrigin+ ',' + xScaleHorPos +')')
+    .call(d3.axisBottom(xScale));
 }
 </script>
 </body>
