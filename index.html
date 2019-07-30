@@ -27,34 +27,21 @@
       /*text {font-family: "Helvetica Neue", Helvetica, sans-serif;
             font-size: 16px;
             color: #333;}*/
-
-      #svg1 {
+      #slider {
+        display: block;
+        z-index:1;
+        position:absolute;
+        top:0;
+        left:5%;
+      }      
+      #whiteCanvas {
       display:block; border:1px solid #ccc; position:absolute;
       top:5%; left:5%; width:90%; height:90%; background:#fff;
+      z-index:-1;
       }
       h1 {
         text-align: center;
       }
-    #play-button {
-      position: absolute;
-      top: 140px;
-      left: 50px;
-      background: #f08080;
-      padding-right: 26px;
-      border-radius: 3px;
-      border: none;
-      color: white;
-      margin: 0;
-      padding: 0 12px;
-      width: 60px;
-      cursor: pointer;
-      height: 30px;
-    }
-
-    #play-button:hover {
-      background-color: #696969;
-    }    
-    
     .ticks {
       font-size: 10px;
     }
@@ -87,8 +74,6 @@
       fill: #fff;
       stroke: #000;
       stroke-opacity: 0.5;
-      stroke-width: 1.25px;
-    }      
 
     </style>
     <!-- The narrative visualization should be built with scenes, annotations, parameters, and triggers. -->
@@ -99,25 +84,26 @@
     The triggers connect user interface actions to changes in parameters that change the state of the narrative visualization. These triggers can be event listeners (callback functions) that change parameter values and then update the display to reflect the result of the event.-->   
 
 <body onload='init()'>
-<h1>Hello, world!</h1>  
-<svg id="svg1"></svg>
+<h1>Hello, world!</h1> 
+<div id="slider"></div>
+<svg id="whiteCanvas"></svg>
 <script>
 async function init() {
   const dataset = await d3.csv('https://mm026184.github.io/mjm31-cs-498-narrative-viz/files/internet_clean_data.csv');
-  console.log(data);
-  var svg1 = document.getElementById('svg1');
+  console.log(dataset);
+  var whiteCanvas = document.getElementById('whiteCanvas');
 
   var translateOrigin = 100;
 
-  console.log('client', svg1.clientWidth + 'x' + svg1.clientHeight);
+  console.log('client', whiteCanvas.clientWidth + 'x' + whiteCanvas.clientHeight);
 
-  var xScale = d3.scaleLinear().domain([0,100]).range([0,svg1.clientWidth-(translateOrigin+50)]);
-  var yScale = d3.scaleLinear().domain([0,6]).range([svg1.clientHeight-(translateOrigin+100),0]);
+  var xScale = d3.scaleLinear().domain([0,100]).range([0,whiteCanvas.clientWidth-(translateOrigin+50)]);
+  var yScale = d3.scaleLinear().domain([0,6]).range([whiteCanvas.clientHeight-(translateOrigin+100),0]);
   var rScale = d3.scaleSqrt().domain([9000,1378665000]).range([2,50]); 
 
-  var xScaleHorPos = svg1.clientHeight-translateOrigin;
+  var xScaleHorPos = whiteCanvas.clientHeight-translateOrigin;
 
-  var svgPlot = d3.select('svg')
+  var dataPlot = d3.select('svg')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')');
 
@@ -144,203 +130,114 @@ async function init() {
     var curCountry = d.CountryName;
 
     if (selectedInd == 0) {
-      d3.selectAll('circle').style('opacity',0.05);
-      buildChartFromData(2100,2100,curCountry);
-      d3.select(this).style('opacity',0.95);
+      //d3.selectAll('circle').style('opacity',0.05);
       selectedInd = 1;
+      filterDataset(curCountry,2100);
+      //d3.selectAll('circle').data(d)
+      //.append('circle')
+      //.attr('cx',function(d) {return xScale(+d.PercUsingInternet);})
+      //.attr('cy',function(d) {return yScale(+d.InnovationsPerThousand);})
+      //.attr('r',function(d) {return rScale(+d.Population);})
+      //.attr('class','bubbleData')
+      //.style('fill',function(d) {return dataColor(d.IncomeGroup);});      
     } else {
-      d3.selectAll("svg > *").remove();
-      buildChartFromData(curYear,2100,'');
+      //d3.selectAll("svg > *").remove();
       selectedInd = 0;  
+      filterDataset('',curYear);
+      updateSlider(curYear);
     }
   }
 
-  function buildAxis() {
-    var fSize = '14px';
+  //function buildAxis() {
+  var fSize = '14px';
 
-    var yAxis = svgPlot
+  var yAxis = d3.select('svg')
+          .append('g')
+          .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
           .call(d3.axisLeft(yScale));
   
-    var xAxis = svgPlot
+  var xAxis = d3.select('svg')
+          .append('g')
+          .attr('transform','translate(' + translateOrigin+ ',' + xScaleHorPos + ')')
           .call(d3.axisBottom(xScale));
 
-    xAxis.selectAll('text')
+  xAxis.selectAll('text')
       .attr('font-size',fSize);
-    yAxis.selectAll('text')
-      .attr('font-size',fSize);    
-  }
+  yAxis.selectAll('text')
+      .attr('font-size',fSize);
+
+  //xAxisLabel
+  d3.select('svg').append("text")
+    .attr("x",(whiteCanvas.clientWidth-(translateOrigin+50))/2)
+    .attr("y", xScaleHorPos+50)
+    .attr('class','xAxisLabel')
+    .text('% of population using internet');
+
+  var yLabelHeight = -((whiteCanvas.clientHeight-(translateOrigin+50))/2)
+  //yAxisLabel
+  d3.select('svg')
+    .append("text")
+    .attr('text-anchor', 'middle')
+    .attr("transform", "translate("+ (translateOrigin/2) +","+(whiteCanvas.clientHeight/2)+")rotate(-90)")      
+    .attr('class','yAxisLabel')
+    .text('Innovations per 1000 residents');    
+  //}
 
   function filterDataset(country='',year=2100) {
+    var newData = dataset
+      .filter(function(d) {return d.Population > 0;});
+
     if (country > '') {
-      var newData = dataset
-        .filter(function(d) {return d.CountryName == country;})
-        .filter(function(d) {return d.Population > 0;})
-      buildChartFromData(newData);
+      newData = newData.filter(function(d) {return d.CountryName == country;})
+      addBigText(country);
     }
 
     if (year != 2100) {
-      var newData = dataset
-        .filter(function(d) {return d.Year == year;})
-        .filter(function(d) {return d.Population > 0;})
-      buildChartFromData(newData);      
+      newData = newData.filter(function(d) {return d.Year == year;});
+      addBigText(year);
     }
+
+    console.log(newData);
+    buildChartFromData(newData);
+
   }
 
   function buildChartFromData(data){
 
-    d3.selectAll("text").remove();
-    buildAxis();
+    d3.selectAll("circle.bubbleData").remove();
+    //buildAxis();
 
-    var circles = svgPlot.selectAll('circle').data(data);
+    var circles = dataPlot.selectAll('circle').data(data);
+
+    var radius = function(d) { 
+      if (selectedInd == 0) {
+        return rScale(+d.Population); 
+      } else {
+        if (rScale(+d.Population) > 10) {
+          return 10;
+        } else {
+          return rScale(+d.Population);
+        }
+      }
+    }
 
     circles.enter()
       .append('circle')
       .attr('cx',function(d) {return xScale(+d.PercUsingInternet);})
       .attr('cy',function(d) {return yScale(+d.InnovationsPerThousand);})
-      .attr('r',function(d) {if (rScale(+d.Population) > 10) { return 10;} else { return rScale(+d.Population);}})
+      .attr('r',radius)
+      .attr('class','bubbleData')
+      //.attr('r',function(d) {if (rScale(+d.Population) > 10) { return 10;} else { return rScale(+d.Population);}})
       .style('fill',function(d) {return dataColor(d.IncomeGroup);})
       .on("mouseover",changeStrokeOnHover)
       .on("mouseout",changeBackStroke)
       .on("click",handleClick);
+        
+  }
 
-    circles.exit()
-      .remove();
-    if (country > '' && year == 2100 && next_year == 2100) {
-      d3.select('svg')
-        .append('g')
-        .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
-        .selectAll('circle')
-        .data(data)
-        .enter()
-        .append('circle')
-        .filter(function(d) {return d.CountryName == country;})
-        .filter(function(d) {return d.Population > 0;})
-        .attr('cx',function(d) {return xScale(+d.PercUsingInternet);})
-        .attr('cy',function(d) {return yScale(+d.InnovationsPerThousand);})
-        .attr('r',function(d) {if (rScale(+d.Population) > 10) { return 10;} else { return rScale(+d.Population);}})
-        .style('fill',function(d) {return dataColor(d.IncomeGroup);})
-        .on("mouseover",changeStrokeOnHover)
-        .on("mouseout",changeBackStroke)
-        .on("click",handleClick);
-      d3.select('svg')
-        .append('g')
-        .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
-        .append("text")
-        .attr("x",(svg1.clientWidth-(translateOrigin+50))/2)
-        .attr("y", 200)
-        .attr('font-size','48px')
-        .attr('text-anchor','middle')
-        .attr('fill','#C0C0C0')
-        .attr('opacity',0.65)
-        .text(country);         
-    }
+  function addBigText(value) {
 
-    if (year != 2100 && next_year == 2100 && country == '') {
-      d3.select('svg')
-        .append('g')
-        .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')     
-        .selectAll('circle')
-        .data(data)
-        .enter()
-        .append('circle')
-        .filter(function(d) {return d.Year == year;})
-        .filter(function(d) {return d.Population > 0;})
-        .attr('cx',function(d) {return xScale(+d.PercUsingInternet);})
-        .attr('cy',function(d) {return yScale(+d.InnovationsPerThousand);})
-        .attr('r',function(d) {return rScale(+d.Population);})
-        .style('fill',function(d) {return dataColor(d.IncomeGroup);})
-        .on("mouseover",changeStrokeOnHover)
-        .on("mouseout",changeBackStroke)
-        .on("click",handleClick);
-      d3.select('svg')
-        .append('g')
-        .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
-        .append("text")
-        .attr("x",(svg1.clientWidth-(translateOrigin+50))/2)
-        .attr("y", 200)
-        .attr('font-size','48px')
-        .attr('text-anchor','middle')
-        .attr('fill','#C0C0C0')
-        .attr('opacity',0.65)
-        .text(year); 
-    }
-
-    if (year != 2100 && next_year != 2100 && country == '') {
-      var trans = d3.transition()
-        .duration(750)
-        .ease(d3.easeLinear);
-
-      var originalData = d3.select('svg')
-        .append('g')
-        .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')     
-        .selectAll('circle')
-        .data(data)
-        .enter()
-        .append('circle')
-        .filter(function(d) {return d.Year == year;})
-        .filter(function(d) {return d.Population > 0;})
-        .attr('cx',function(d) {return xScale(+d.PercUsingInternet);})
-        .attr('cy',function(d) {return yScale(+d.InnovationsPerThousand);})
-        .attr('r',function(d) {return rScale(+d.Population);})
-        .style('fill',function(d) {return dataColor(d.IncomeGroup);});
-
-      var newData = d3.selectAll('circle')
-        .data(data)
-        .filter(function(d) {return d.Year == next_year;})
-        .filter(function(d) {return d.Population > 0;})
-
-      //join new data with old
-      var joinedData = originalData
-        .join(newData);
-
-      //exit old not in new
-      joinedData.exit()
-        .attr("class", "exit")
-        .transition(trans)
-        .remove();
-
-      //enter new elements present in newdata
-      joinedData.enter()
-        .append('circle')
-        .filter(function(d) {return d.Year == next_year;})
-        .filter(function(d) {return d.Population > 0;})
-        .attr('class','enter')
-        .transition(trans)
-        .attr('cx',function(d) {return xScale(+d.PercUsingInternet);})
-        .attr('cy',function(d) {return yScale(+d.InnovationsPerThousand);})
-        .attr('r',function(d) {return rScale(+d.Population);})
-        .style('fill',function(d) {return dataColor(d.IncomeGroup);})        
-        .on("mouseover",changeStrokeOnHover)
-        .on("mouseout",changeBackStroke)
-        .on("click",handleClick);
-
-      /*var origText = d3.select('svg')
-        .append('g')
-        .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
-        .append("text")
-        .attr("x",(svg1.clientWidth-(translateOrigin+50))/2)
-        .attr("y", 200)
-        .attr('font-size','48px')
-        .attr('text-anchor','middle')
-        .attr('fill','#C0C0C0')
-        .attr('opacity',0.65)
-        .text(year);
-
-      origText.transition(trans)
-        .remove();
-      
-      d3.select('svg')
-        .append('g')
-        .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
-        .append("text")
-        .attr("x",(svg1.clientWidth-(translateOrigin+50))/2)
-        .attr("y", 200)
-        .attr('font-size','48px')
-        .attr('text-anchor','middle')
-        .attr('fill','#C0C0C0')
-        .attr('opacity',0.65)
-        .text(next_year);*/            
-    }    
+    d3.select("text.centerText").text(value);
   }
 
   var playData = function() {
@@ -357,10 +254,94 @@ async function init() {
 
   }
 
-  buildChartFromData(1993,2100,'');
 
+  filterDataset('',2016);
+  d3.select('svg')
+      .append('g')
+      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append("text")
+      .attr("x",(whiteCanvas.clientWidth-(translateOrigin+50))/2)
+      .attr("y", whiteCanvas.clientHeight/2 - translateOrigin)
+      .attr('font-size','48px')
+      .attr('text-anchor','middle')
+      .attr('fill','#C0C0C0')
+      .attr('opacity',0.65)
+      .attr('class','centerText')
+      .text(2016);  
 
+  ////////// slider //////////
+  var margin = {top:0, right:whiteCanvas.clientWidth/4, bottom:0, left:whiteCanvas.clientWidth/4},
+      width = whiteCanvas.clientWidth - margin.left - margin.right,
+      height = 180  - margin.top - margin.bottom;
 
+  var startDate = 1993,
+      endDate = 2016;
+
+  var svgSlider = d3.select("#slider")
+    .append("svg")
+    .attr("width", whiteCanvas.clientWidth)
+    .attr("height", height);
+    
+  var x = d3.scaleLinear()
+    .domain([startDate, endDate])
+    .range([0, width])
+    .clamp(true);
+
+  var slider = svgSlider.append("g")
+    .attr("class", "slider")
+    .attr("transform", "translate(" + margin.left + ",150)");
+
+  slider.append("line")
+      .attr("class", "track")
+      .attr("x1", x.range()[0])
+      .attr("x2", x.range()[1])
+    .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+      .attr("class", "track-inset")
+    .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+      .attr("class", "track-overlay")
+      .call(d3.drag()
+          .on("start.interrupt", function() { slider.interrupt(); })
+          .on("start drag", function() { updateSlider(x.invert(d3.event.x)); }));
+
+  slider.insert("g", ".track-overlay")
+    .attr("class", "ticks")
+    .attr("transform", "translate(0," + 18 + ")")
+    .selectAll("text")
+      .data(x.ticks(23))
+      .enter()
+      .append("text")
+      .attr("x", x)
+      .attr("y", 10)
+      .attr("text-anchor", "middle")
+      .text(function(d) {return d });
+
+  var handle = slider.insert("circle", ".track-overlay")
+    .attr("class", "handle")
+    .attr("r", 9);
+
+  var label = slider.append("text")  
+    .attr("class", "label")
+    .attr("text-anchor", "middle")
+    .text(startDate)
+    .attr("transform", "translate(0," + (-15) + ")");
+
+  function updateSlider(h) {
+    selectedInd = 0;
+    
+    // update position and text of label according to slider scale
+    handle.attr("cx", x(h));
+  
+    var l = Math.round(h);
+  
+    label
+      .attr("x", x(h))
+      .text(l);
+  
+    // filter data set and redraw plot
+    filterDataset('',l);
+  }
+
+  updateSlider(2016);
 }
 </script>
 </body>
