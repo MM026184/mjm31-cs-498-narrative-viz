@@ -1,30 +1,30 @@
 <!doctype html>
-<html lang="en">
+<html lang='en'>
   <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset='utf-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1, shrink-to-fit=no'>
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' integrity='sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T' crossorigin='anonymous'>
 
     <title>Hello, world!</title>
   </head>
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src='https://code.jquery.com/jquery-3.3.1.slim.min.js' integrity='sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo' crossorigin='anonymous'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js' integrity='sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1' crossorigin='anonymous'></script>
+    <script src='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js' integrity='sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM' crossorigin='anonymous'></script>
     <!-- D3 -->
     <script src='https://d3js.org/d3.v5.min.js'></script>
     <style> 
       circle {opacity: 0.65;} 
       body {background:#eee; 
             margin:0; 
-            font-family: "Helvetica Neue", Helvetica, sans-serif;
+            font-family: 'Helvetica Neue', Helvetica, sans-serif;
             font-size: 16px;
             color: #333;}
-      /*text {font-family: "Helvetica Neue", Helvetica, sans-serif;
+      /*text {font-family: 'Helvetica Neue', Helvetica, sans-serif;
             font-size: 16px;
             color: #333;}*/
       #slider {
@@ -78,15 +78,15 @@
     </style>
     <!-- The narrative visualization should be built with scenes, annotations, parameters, and triggers. -->
 
-    <!-- The scenes should follow a template for visual consistency and follow an order to best convey the message. One way to implement different scenes is to make each a separate web page. Another way is to use d3.select(id).html = "" to clear the contents of a container element (e.g. an SVG element) and then repopulate that element using .append().
+    <!-- The scenes should follow a template for visual consistency and follow an order to best convey the message. One way to implement different scenes is to make each a separate web page. Another way is to use d3.select(id).html = '' to clear the contents of a container element (e.g. an SVG element) and then repopulate that element using .append().
     The annotations should follow a template for visual consistency from scene to scene. These annotations should also highlight and reinforce specific data items or trends that make the important points for the desired messaging of the narrative visualization. The lessons on d3 popups can be helpful on how to to make and place annotations, but as an annotation, they should appear as part of the scene and not have to wait for a mouseover event.
     The parameters are the state variables of your narrative visualization. Your narrative visualization should use these parameters to control the construction of scenes. These parameters will be key variables in your JavaScript code, as well as parameters to key functions used to set up each scene.
     The triggers connect user interface actions to changes in parameters that change the state of the narrative visualization. These triggers can be event listeners (callback functions) that change parameter values and then update the display to reflect the result of the event.-->   
 
 <body onload='init()'>
-<h1>Hello, world!</h1> 
-<div id="slider"></div>
-<svg id="whiteCanvas"></svg>
+<!--<h1>Hello, world!</h1>-->
+<div id='slider'></div>
+<svg id='whiteCanvas'></svg>
 <script>
 async function init() {
   const dataset = await d3.csv('https://mm026184.github.io/mjm31-cs-498-narrative-viz/files/internet_clean_data.csv');
@@ -97,9 +97,9 @@ async function init() {
 
   console.log('client', whiteCanvas.clientWidth + 'x' + whiteCanvas.clientHeight);
 
-  var xScale = d3.scaleLinear().domain([0,100]).range([0,whiteCanvas.clientWidth-(translateOrigin+50)]);
+  var xScale = d3.scaleLinear().domain([0,100]).range([0,whiteCanvas.clientWidth-(translateOrigin+200)]);
   var yScale = d3.scaleLinear().domain([0,6]).range([whiteCanvas.clientHeight-(translateOrigin+100),0]);
-  var rScale = d3.scaleSqrt().domain([9000,1378665000]).range([2,50]); 
+  var rScale = d3.scaleSqrt().domain([9000,1400000000]).range([2,50]); 
 
   var xScaleHorPos = whiteCanvas.clientHeight-translateOrigin;
 
@@ -141,7 +141,7 @@ async function init() {
       //.attr('class','bubbleData')
       //.style('fill',function(d) {return dataColor(d.IncomeGroup);});      
     } else {
-      //d3.selectAll("svg > *").remove();
+      //d3.selectAll('svg > *').remove();
       selectedInd = 0;  
       filterDataset('',curYear);
       updateSlider(curYear);
@@ -167,18 +167,18 @@ async function init() {
       .attr('font-size',fSize);
 
   //xAxisLabel
-  d3.select('svg').append("text")
-    .attr("x",(whiteCanvas.clientWidth-(translateOrigin+50))/2)
-    .attr("y", xScaleHorPos+50)
+  d3.select('svg').append('text')
+    .attr('x',(whiteCanvas.clientWidth-(translateOrigin+50))/2)
+    .attr('y', xScaleHorPos+50)
     .attr('class','xAxisLabel')
     .text('% of population using internet');
 
   var yLabelHeight = -((whiteCanvas.clientHeight-(translateOrigin+50))/2)
   //yAxisLabel
   d3.select('svg')
-    .append("text")
+    .append('text')
     .attr('text-anchor', 'middle')
-    .attr("transform", "translate("+ (translateOrigin/2) +","+(whiteCanvas.clientHeight/2)+")rotate(-90)")      
+    .attr('transform', 'translate('+ (translateOrigin/2) +','+(whiteCanvas.clientHeight/2)+')rotate(-90)')      
     .attr('class','yAxisLabel')
     .text('Innovations per 1000 residents');    
   //}
@@ -204,7 +204,7 @@ async function init() {
 
   function buildChartFromData(data){
 
-    d3.selectAll("circle.bubbleData").remove();
+    d3.selectAll('circle.bubbleData').remove();
     //buildAxis();
 
     var circles = dataPlot.selectAll('circle').data(data);
@@ -229,22 +229,22 @@ async function init() {
       .attr('class','bubbleData')
       //.attr('r',function(d) {if (rScale(+d.Population) > 10) { return 10;} else { return rScale(+d.Population);}})
       .style('fill',function(d) {return dataColor(d.IncomeGroup);})
-      .on("mouseover",changeStrokeOnHover)
-      .on("mouseout",changeBackStroke)
-      .on("click",handleClick);
+      .on('mouseover',changeStrokeOnHover)
+      .on('mouseout',changeBackStroke)
+      .on('click',handleClick);
         
   }
 
   function addBigText(value) {
 
-    d3.select("text.centerText").text(value);
+    d3.select('text.centerText').text(value);
   }
 
   var playData = function() {
     startYear = 1993
     endYear = 2016
 
-    d3.selectAll("svg > *").remove();
+    d3.selectAll('svg > *').remove();
 
     for (year = startYear; year < endYear; year++) {
       nextYear = year + 1;
@@ -259,9 +259,9 @@ async function init() {
   d3.select('svg')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
-      .append("text")
-      .attr("x",(whiteCanvas.clientWidth-(translateOrigin+50))/2)
-      .attr("y", whiteCanvas.clientHeight/2 - translateOrigin)
+      .append('text')
+      .attr('x',(whiteCanvas.clientWidth-(translateOrigin+50))/2)
+      .attr('y', whiteCanvas.clientHeight/2 - translateOrigin)
       .attr('font-size','48px')
       .attr('text-anchor','middle')
       .attr('fill','#C0C0C0')
@@ -277,69 +277,192 @@ async function init() {
   var startDate = 1993,
       endDate = 2016;
 
-  var svgSlider = d3.select("#slider")
-    .append("svg")
-    .attr("width", whiteCanvas.clientWidth)
-    .attr("height", height);
+  var svgSlider = d3.select('#slider')
+    .append('svg')
+    .attr('width', whiteCanvas.clientWidth)
+    .attr('height', height);
     
   var x = d3.scaleLinear()
     .domain([startDate, endDate])
     .range([0, width])
     .clamp(true);
 
-  var slider = svgSlider.append("g")
-    .attr("class", "slider")
-    .attr("transform", "translate(" + margin.left + ",150)");
+  var slider = svgSlider.append('g')
+    .attr('class', 'slider')
+    .attr('transform', 'translate(' + margin.left + ',150)');
 
-  slider.append("line")
-      .attr("class", "track")
-      .attr("x1", x.range()[0])
-      .attr("x2", x.range()[1])
+  slider.append('line')
+      .attr('class', 'track')
+      .attr('x1', x.range()[0])
+      .attr('x2', x.range()[1])
     .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-      .attr("class", "track-inset")
+      .attr('class', 'track-inset')
     .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-      .attr("class", "track-overlay")
+      .attr('class', 'track-overlay')
       .call(d3.drag()
-          .on("start.interrupt", function() { slider.interrupt(); })
-          .on("start drag", function() { updateSlider(x.invert(d3.event.x)); }));
+          .on('start.interrupt', function() { slider.interrupt(); })
+          .on('start drag', function() { updateSlider(x.invert(d3.event.x)); }));
 
-  slider.insert("g", ".track-overlay")
-    .attr("class", "ticks")
-    .attr("transform", "translate(0," + 18 + ")")
-    .selectAll("text")
+  slider.insert('g', '.track-overlay')
+    .attr('class', 'ticks')
+    .attr('transform', 'translate(0,' + 18 + ')')
+    .selectAll('text')
       .data(x.ticks(23))
       .enter()
-      .append("text")
-      .attr("x", x)
-      .attr("y", 10)
-      .attr("text-anchor", "middle")
+      .append('text')
+      .attr('x', x)
+      .attr('y', 10)
+      .attr('text-anchor', 'middle')
       .text(function(d) {return d });
 
-  var handle = slider.insert("circle", ".track-overlay")
-    .attr("class", "handle")
-    .attr("r", 9);
+  var handle = slider.insert('circle', '.track-overlay')
+    .attr('class', 'handle')
+    .attr('r', 9);
 
-  var label = slider.append("text")  
-    .attr("class", "label")
-    .attr("text-anchor", "middle")
+  var label = slider.append('text')  
+    .attr('class', 'label')
+    .attr('text-anchor', 'middle')
     .text(startDate)
-    .attr("transform", "translate(0," + (-15) + ")");
+    .attr('transform', 'translate(0,' + (-15) + ')');
 
   function updateSlider(h) {
     selectedInd = 0;
     
     // update position and text of label according to slider scale
-    handle.attr("cx", x(h));
+    handle.attr('cx', x(h));
   
     var l = Math.round(h);
   
     label
-      .attr("x", x(h))
+      .attr('x', x(h))
       .text(l);
   
     // filter data set and redraw plot
     filterDataset('',l);
   }
+
+  // Build the size legend
+  var sizeLegendVals = [1400000000,(1400000000*0.5),(1400000000*0.1),(1400000000*0.01)] 
+
+  d3.select('#whiteCanvas')
+      .append('g')
+      .attr('width', 460)
+      .attr('height', 460)
+    .selectAll('legend')
+      .data(sizeLegendVals)
+      .enter()
+      .append('circle')
+      .attr('cx',whiteCanvas.clientWidth-(translateOrigin-40))
+      .attr('cy',function(d) {return translateOrigin+100 - rScale(d);})
+      .attr('r',function(d) {return rScale(d);})
+      .attr('fill','#C0C0C0')
+      .attr('class','popualationLegendCircles')
+      .attr('opacity',0.5)
+      .attr('stroke', '#eee')
+      .attr('class','legendCircles');
+
+  // size legend lines
+  d3.select('#whiteCanvas')
+    .append('g')
+    .selectAll('legend')
+    .data(sizeLegendVals)
+    .enter()
+    .append('line')
+      .attr('x1', whiteCanvas.clientWidth-(translateOrigin-40))
+      .attr('x2', whiteCanvas.clientWidth-(translateOrigin-40)-75)
+      .attr('y1',function(d) {return translateOrigin+100 - rScale(d)*2;} )
+      .attr('y2',function(d) {return translateOrigin+100 - rScale(d)*2;} )
+      .attr('class','popualationLegendLines')
+      .attr('stroke', '#C0C0C0')
+      .style('stroke-dasharray', ('2,2'));
+
+  //size legend values
+  d3.select('#whiteCanvas')
+  .append('g')
+    .selectAll('legend')
+    .data(sizeLegendVals)
+    .enter()
+    .append('text')
+      .attr('x', whiteCanvas.clientWidth-(translateOrigin-40)-125)
+      .attr('y', function(d) {return translateOrigin+100 - rScale(d)*2;} )
+      .text( function(d){ return d } )
+      .style('font-size', 10)
+      .attr('alignment-baseline', 'middle')
+      .attr('class','popualationLegendValue') 
+      .attr('text-align', 'left');
+
+  //size legend label
+  var keyDiameter = rScale(1400000000);
+
+  /*d3.select('#whiteCanvas')
+    .append('g')
+    .selectAll('legend')
+    .append('text')
+    .attr('x', whiteCanvas.clientWidth - translateOrigin)
+    .attr('y', translateOrigin+10)    
+    .style('font-size', 12)
+    .text('Population')
+    .attr('text-align','center');*/
+
+  d3.select('#whiteCanvas')
+      .append('g')
+      //.attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',whiteCanvas.clientWidth - translateOrigin-40 + keyDiameter)
+      .attr('y', translateOrigin-10)  
+      .attr('font-size','12px')
+      .attr('text-anchor','middle')
+      .attr('class','popualationLegendLabel')
+      .attr('font-style','italic')
+      //.attr('fill','#C0C0C0')
+      //.attr('opacity',0.65)
+      //.attr('class','centerText')
+      .text('Population');
+
+  //color legend
+  
+  var bubbleColorDomain = ['Low income','Lower middle income','Upper middle income','High income'];
+
+  d3.select('#whiteCanvas')
+    .append('g')
+    .attr('width', 200)
+    .attr('height', 460)      
+    .selectAll("rect")
+    .data(bubbleColorDomain)
+    .enter()
+    .append('rect')
+    .attr('x',whiteCanvas.clientWidth - translateOrigin-70+20)
+    .attr('y', function(d,i) {return i*20 + translateOrigin+150;})
+    .attr('width',15)
+    .attr('height',15)
+    .attr('fill',function(d) {return dataColor(d);});
+
+  d3.select('#whiteCanvas')
+    .append('g')
+    .selectAll('text')
+    .data(bubbleColorDomain)
+    .enter()
+    .append('text')
+    .attr('x', whiteCanvas.clientWidth - translateOrigin-50+20)
+    .attr('y', function(d,i) {return i*20 + translateOrigin+150+12;})
+    .attr('font-size',12)
+    .text(function(d) {return d;});
+
+  d3.select('#whiteCanvas')
+      .append('g')
+      //.attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',whiteCanvas.clientWidth - translateOrigin-40 + keyDiameter)
+      .attr('y', translateOrigin+140)  
+      .attr('font-size','12px')
+      .attr('text-anchor','middle')
+      .attr('class','incomeLevelKeyLabel')
+      .attr('font-style','italic')
+      //.attr('fill','#C0C0C0')
+      //.attr('opacity',0.65)
+      //.attr('class','centerText')
+      .text('Income Group');    
+
 
   updateSlider(2016);
 }
