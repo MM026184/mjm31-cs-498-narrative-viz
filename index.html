@@ -169,7 +169,10 @@ async function init() {
     d3.select(this).style('stroke','');
   }
 
+  var sliderPainted = 0;
   var selectedInd = 0;
+  var circleMessageShownInd = 0;
+  var backMessageShownInd = 0;
 
   var handleClick = function(d) {
     
@@ -182,6 +185,13 @@ async function init() {
       //d3.selectAll('circle').style('opacity',0.05);
       selectedInd = 1;
       filterDataset(curCountry,2100);
+
+      if (circleMessageShownInd == 1) {
+      	d3.selectAll('text.circleMessage').remove();
+      	if (backMessageShownInd == 0) {
+      		showBackMessage();
+      	}
+      }
       //d3.selectAll('circle').data(d)
       //.append('circle')
       //.attr('cx',function(d) {return xScale(+d.PercUsingInternet);})
@@ -193,6 +203,9 @@ async function init() {
       //d3.selectAll('svg > *').remove();
       selectedInd = 0;  
       filterDataset('',curYear);
+      if (backMessageShownInd == 1) {
+      	d3.selectAll('text.backMessage').remove();
+      }
       updateSlider(curYear);
     }
   }
@@ -232,6 +245,54 @@ async function init() {
     .text('Innovations per 1000 residents');    
   //}
 
+  function showCircleMessage() {
+  	circleMessageShownInd = 1;
+  	var txt = '*Click on a country to view its history of internet use vs. innovation rate';
+  	var txt2 = '**Hover on a country to view detailed data';
+  	console.log(txt);
+  	//TODO add message explaining that click = view countries data history and hover = get additional details
+  	d3.select('#whiteCanvas')
+      .append('g')
+      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',(whiteCanvas.clientWidth-(translateOrigin+100))/2)
+      .attr('y',whiteCanvas.clientHeight/2 - 70)
+      .attr('font-size','12px')
+      .attr('text-anchor','middle')
+      .attr('font-style','italic')
+      .attr('class','circleMessage')
+      .text(txt);
+  	d3.select('#whiteCanvas')
+      .append('g')
+      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',((whiteCanvas.clientWidth-(translateOrigin+100))/2))
+      .attr('y',whiteCanvas.clientHeight/2 - 70 + 15)
+      .attr('font-size','12px')
+      .attr('text-anchor','middle')
+      .attr('font-style','italic')
+      .attr('class','circleMessage')
+      .text(txt2);      	
+  }
+
+  function showBackMessage() {
+  	backMessageShownInd = 1;
+  	var txt = '*Click on a year to go back to the all-country view for that year';
+  	console.log(txt);
+  	//TODO add message explaining that click = view countries data history and hover = get additional details
+  	d3.select('#whiteCanvas')
+      .append('g')
+      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',(whiteCanvas.clientWidth-(translateOrigin+100))/2)
+      .attr('y',whiteCanvas.clientHeight/2 - 70)
+      .attr('font-size','12px')
+      .attr('text-anchor','middle')
+      .attr('font-style','italic')
+      .attr('class','backMessage')
+      .text(txt);	
+  }  
+
   function filterDataset(country='',year=2100) {
     var newData = dataset
       .filter(function(d) {return d.Population > 0;});
@@ -246,8 +307,14 @@ async function init() {
       addBigText(year);
     }
 
-    console.log(newData);
+    console.log('year: ' + year);
+    console.log('circleMessageShownInd: ' + circleMessageShownInd);
+    console.log('sliderPainted: ' + sliderPainted);
     buildChartFromData(newData);
+
+  	if (year == 2016 && circleMessageShownInd == 0 && sliderPainted == 1) {
+  		showCircleMessage();
+  	} 
 
   }
 
@@ -258,6 +325,7 @@ async function init() {
       + '% Internet Use: ' + d.PercUsingInternet + '\n'
       + 'Innovations per capita: ' + d.InnovationsPerThousand;
   }
+
   function buildChartFromData(data){
 
     d3.selectAll('circle.bubbleData').remove();
@@ -304,7 +372,7 @@ async function init() {
         .text(function(d) {return d.Year;});        
     } else {
       d3.selectAll('text.circleYearLabels').remove();
-    } 
+    }
         
   }
 
@@ -324,7 +392,25 @@ async function init() {
   var handle;
   var label;
 
+  //Also need to add message explaining how to return to cross-country view upon selection of a specific year for a country in single country view
+  function updateSlider(h) {
+    selectedInd = 0;
+    
+    // update position and text of label according to slider scale
+    handle.attr('cx', x(h));
+  
+    var l = Math.round(h);
+  
+    label
+      .attr('x', x(h))
+      .text(l);
+  
+    // filter data set and redraw plot
+    filterDataset('',l);
+  }
+
   function paintSlider() {
+  	sliderPainted = 1;
     ////////// slider //////////
     margin = {top:0, right:whiteCanvas.clientWidth/4, bottom:0, left:whiteCanvas.clientWidth/4};
     width = whiteCanvas.clientWidth - margin.left - margin.right;
@@ -382,37 +468,6 @@ async function init() {
       .attr('transform', 'translate(0,' + (-15) + ')');
   }
 
-  var messageShownInd = 0;
-
-  function showMessage() {
-  	messageShownInd = 1;
-  	//TODO add message explaining that click = view countries data history and hover = get additional details
-  }
-
-  function removeMessage() {
-  	//function to remove message
-  }
-
-  //Also need to add message explaining how to return to cross-country view upon selection of a specific year for a country in single country view
-  function updateSlider(h) {
-    selectedInd = 0;
-    
-    // update position and text of label according to slider scale
-    handle.attr('cx', x(h));
-  
-    var l = Math.round(h);
-  
-  	removeMessage();
-  	if (l == 2016 && messageShownInd == 0) {
-  		showMessage();
-  	}
-    label
-      .attr('x', x(h))
-      .text(l);
-  
-    // filter data set and redraw plot
-    filterDataset('',l);
-  }
 
 //  function updateYear(y) {
 //  	filterDataset('',y);
@@ -428,7 +483,6 @@ async function init() {
 //  		updateYear(y);
 //  	}
 //  }
-  var sliderPainted = 0;
 
   function buttonClick1() {
 
@@ -520,7 +574,8 @@ async function init() {
 
   	var txt = 'The Ukraine is like nearly all lower income countries in that innovation rates have been consistently low, despite increasing internet adoption.';
   	var txt2 = 'It is also worth noting that internet adoption rates appear to be rising at significantly slower rates compared to higher income countries.';  	
-  	var txt3 = 'Together, this suggests that ';  	
+  	var txt3 = 'Together, these observations suggest that a country needs income, likely invested in infrustructure and education, to truly spark innovative ventures,';
+  	var txt4 = 'supplemented with better internet access for its residents.';  	
   	//add info
   	d3.select('svg')
       .append('g')
@@ -543,7 +598,29 @@ async function init() {
       .attr('text-anchor','middle')
       .attr('font-style','italic')
       .attr('class','buttonText')
-      .text(txt2);          	
+      .text(txt2); 
+  	d3.select('svg')
+      .append('g')
+      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',(whiteCanvas.clientWidth-(translateOrigin+200))/2)
+      .attr('y',whiteCanvas.clientHeight/2 + 25+ 40 + 20)
+      .attr('font-size','16px')
+      .attr('text-anchor','middle')
+      .attr('font-style','italic')
+      .attr('class','buttonText')
+      .text(txt3);
+  	d3.select('svg')
+      .append('g')
+      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',(whiteCanvas.clientWidth-(translateOrigin+200))/2)
+      .attr('y',whiteCanvas.clientHeight/2 + 25 + 20 + 60)
+      .attr('font-size','16px')
+      .attr('text-anchor','middle')
+      .attr('font-style','italic')
+      .attr('class','buttonText')
+      .text(txt4);               	
   }
 
   function buttonClick4() {
@@ -551,7 +628,9 @@ async function init() {
   	selectedInd = 0;
   	filterDataset('',2002);
 
-  	var txt = 'It is worth noting that innovation rates in high-income countries were relatively unchanged from 1993-2002.';
+  	var txt = 'It is also worth noting that the adoption of the World Wide Web from 1993-2002 didn\'t seem to result in remarkably';
+  	var txt2 = 'improved innovation rates in high-income countries.';
+  	var txt3 = 'During this time, most of these countries had similar rates of innovation despite an increase in internet adoption rates.';
 
   	//add info
   	d3.select('svg')
@@ -564,7 +643,29 @@ async function init() {
       .attr('text-anchor','middle')
       .attr('font-style','italic')
       .attr('class','buttonText')
-      .text(txt);     
+      .text(txt);
+  	d3.select('svg')
+      .append('g')
+      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',(whiteCanvas.clientWidth-(translateOrigin+200))/2)
+      .attr('y',145)
+      .attr('font-size','16px')
+      .attr('text-anchor','middle')
+      .attr('font-style','italic')
+      .attr('class','buttonText')
+      .text(txt2);
+  	d3.select('svg')
+      .append('g')
+      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',(whiteCanvas.clientWidth-(translateOrigin+200))/2)
+      .attr('y',165)
+      .attr('font-size','16px')
+      .attr('text-anchor','middle')
+      .attr('font-style','italic')
+      .attr('class','buttonText')
+      .text(txt3);                 
 
   }
 
@@ -573,9 +674,9 @@ async function init() {
   	selectedInd = 0;
   	filterDataset('',2004);
 
-  	var hyperText = 'Web 2.0'
   	var txt = 'Innovation rates climbed in 2004 for several high-income countries when the call to \"Web 2.0\" was first suggested.';
-  	var txt2 = 'Web 2.0 is a term used to describe websites that emphasize user-generated content, ease of use, participatory culture and interoperability for end users.';
+  	var txt2 = 'Web 2.0 is a term used to describe an internet that emphasizes user-generated content, ease of use, a participatory culture and interoperability for end users.';
+  	var txt3 = 'This suggests that when the culture of internet changed, so did its ability to positively impact innovation improved.';
 
   	//add info
   	d3.select('svg')
@@ -599,17 +700,25 @@ async function init() {
       .attr('text-anchor','middle')
       .attr('font-style','italic')
       .attr('class','buttonText')
-      .text(txt2);      
+      .text(txt2);
+  	d3.select('svg')
+      .append('g')
+      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',(whiteCanvas.clientWidth-(translateOrigin+200))/2)
+      .attr('y',185)
+      .attr('font-size','16px')
+      .attr('text-anchor','middle')
+      .attr('font-style','italic')
+      .attr('class','buttonText')
+      .text(txt3);           
   }
 
   function buttonClick6() {
   	d3.selectAll('text.buttonText').remove();  	
   	selectedInd = 0;
   	filterDataset('',1993);
-  	if (sliderPainted == 0) {
-	  	paintSlider();
-  		sliderPainted = 1;
-  	}  	
+  	paintSlider(); 	
   }
 
   // Build the size legend
