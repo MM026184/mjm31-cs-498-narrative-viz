@@ -574,8 +574,7 @@ async function init() {
 
   	var txt = 'The Ukraine is like nearly all lower income countries in that innovation rates have been consistently low, despite increasing internet adoption.';
   	var txt2 = 'It is also worth noting that internet adoption rates appear to be rising at significantly slower rates compared to higher income countries.';  	
-  	var txt3 = 'Together, these observations suggest that a country needs income, likely invested in infrustructure and education, to truly spark innovative ventures,';
-  	var txt4 = 'supplemented with better internet access for its residents.';  	
+  	var txt3 = 'Together, these observations suggest that a country needs income, likely invested in infrustructure and education, to spark internet-aided, innovative ventures.';
   	//add info
   	d3.select('#whiteCanvas')
       .append('g')
@@ -609,18 +608,7 @@ async function init() {
       .attr('text-anchor','middle')
       //.attr('font-style','italic')
       .attr('class','buttonText')
-      .text(txt3);
-  	d3.select('#whiteCanvas')
-      .append('g')
-      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
-      .append('text')
-      .attr('x',(whiteCanvas.clientWidth-(translateOrigin+200))/2)
-      .attr('y',whiteCanvas.clientHeight/2 + 25 + 20 + 60)
-      .attr('font-size','16px')
-      .attr('text-anchor','middle')
-      //.attr('font-style','italic')
-      .attr('class','buttonText')
-      .text(txt4);               	
+      .text(txt3);              	
   }
 
   function buttonClick4() {
@@ -676,7 +664,7 @@ async function init() {
 
   	var txt = 'Innovation rates climbed in 2004 for several high-income countries when the call to \"Web 2.0\" was first suggested.';
   	var txt2 = 'Web 2.0 is a term used to describe an internet that emphasizes user-generated content, ease of use, a participatory culture and interoperability for end users.';
-  	var txt3 = 'This suggests that when the culture of internet changed, its ability to positively impact innovation improved.';
+  	var txt3 = 'This suggests that when the culture of the internet changed, its ability to positively impact innovation improved.';
 
   	//add info
   	d3.select('#whiteCanvas')
