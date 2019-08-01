@@ -421,7 +421,7 @@ async function init() {
 
     svgSlider = d3.select('#slider')
       .append('svg')
-      .attr('width', whiteCanvas.clientWidth)
+      .attr('width', whiteCanvas.clientWidth -300)
       .attr('height', height);
       
     x = d3.scaleLinear()
@@ -495,7 +495,7 @@ async function init() {
   	var txt2 = 'since the early days of the the World Wide Web.';
 
   	//add info
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -506,7 +506,7 @@ async function init() {
       .attr('font-style','italic')
       .attr('class','buttonText')
       .text(txt);
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -531,7 +531,7 @@ async function init() {
   	var txt3 = 'In fact, they\'ve had the world\'s highest number of innovations per 1000 residents each year since 2005.';
 
   	//add info
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -542,7 +542,7 @@ async function init() {
       .attr('font-style','italic')
       .attr('class','buttonText')
       .text(txt);
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -553,7 +553,7 @@ async function init() {
       .attr('font-style','italic')
       .attr('class','buttonText')
       .text(txt2);
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -577,7 +577,7 @@ async function init() {
   	var txt3 = 'Together, these observations suggest that a country needs income, likely invested in infrustructure and education, to truly spark innovative ventures,';
   	var txt4 = 'supplemented with better internet access for its residents.';  	
   	//add info
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -588,7 +588,7 @@ async function init() {
       .attr('font-style','italic')
       .attr('class','buttonText')
       .text(txt);
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -599,7 +599,7 @@ async function init() {
       .attr('font-style','italic')
       .attr('class','buttonText')
       .text(txt2); 
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -610,7 +610,7 @@ async function init() {
       .attr('font-style','italic')
       .attr('class','buttonText')
       .text(txt3);
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -633,7 +633,7 @@ async function init() {
   	var txt3 = 'During this time, most of these countries had similar rates of innovation despite an increase in internet adoption rates.';
 
   	//add info
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -644,7 +644,7 @@ async function init() {
       .attr('font-style','italic')
       .attr('class','buttonText')
       .text(txt);
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -655,7 +655,7 @@ async function init() {
       .attr('font-style','italic')
       .attr('class','buttonText')
       .text(txt2);
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -679,7 +679,7 @@ async function init() {
   	var txt3 = 'This suggests that when the culture of internet changed, so did its ability to positively impact innovation improved.';
 
   	//add info
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -690,7 +690,7 @@ async function init() {
       .attr('font-style','italic')
       .attr('class','buttonText')
       .text(txt);
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -701,7 +701,7 @@ async function init() {
       .attr('font-style','italic')
       .attr('class','buttonText')
       .text(txt2);
-  	d3.select('svg')
+  	d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
