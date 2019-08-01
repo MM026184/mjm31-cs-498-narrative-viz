@@ -572,8 +572,8 @@ async function init() {
   	selectedInd = 1;
   	filterDataset('Ukraine',2100);
 
-  	var txt = 'The Ukraine is like nearly all lower income countries in that innovation rates have been consistently low, despite increasing internet adoption.';
-  	var txt2 = 'It is also worth noting that internet adoption rates appear to be rising at significantly slower rates compared to higher income countries.';  	
+  	var txt = 'The Ukraine is like nearly all lower-income countries in that innovation rates have been consistently low, despite increasing internet adoption.';
+  	var txt2 = 'It is also worth noting that, for lower-income countries, internet adoption rates appear to be rising at significantly slower rates compared to higher income countries.';  	
   	var txt3 = 'Together, these observations suggest that a country needs income, likely invested in infrustructure and education, to spark internet-aided, innovative ventures.';
   	//add info
   	d3.select('#whiteCanvas')
@@ -616,9 +616,9 @@ async function init() {
   	selectedInd = 0;
   	filterDataset('',2002);
 
-  	var txt = 'It is also worth noting that the adoption of the World Wide Web from 1993-2002 didn\'t seem to result in remarkably';
-  	var txt2 = 'improved innovation rates in high-income countries.';
-  	var txt3 = 'During this time, most of these countries had similar rates of innovation despite an increase in internet adoption rates.';
+  	var txt = 'Paradigm shifts in the nature of the internet itself also seem to play a part.';
+  	var txt2 = 'Increasing adoption of the World Wide Web from 1993-2002 didn\'t seem to result in remarkablyimproved innovation rates in high-income countries.';
+  	//var txt3 = 'During this time, most of these countries had similar rates of innovation despite an increase in internet adoption rates.';
 
   	//add info
   	d3.select('#whiteCanvas')
@@ -643,7 +643,7 @@ async function init() {
       //.attr('font-style','italic')
       .attr('class','buttonText')
       .text(txt2);
-  	d3.select('#whiteCanvas')
+  	/*d3.select('#whiteCanvas')
       .append('g')
       .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
       .append('text')
@@ -653,7 +653,7 @@ async function init() {
       .attr('text-anchor','middle')
       //.attr('font-style','italic')
       .attr('class','buttonText')
-      .text(txt3);                 
+      .text(txt3);*/                 
 
   }
 
@@ -662,9 +662,9 @@ async function init() {
   	selectedInd = 0;
   	filterDataset('',2004);
 
-  	var txt = 'Innovation rates climbed in 2004 for several high-income countries when the call to \"Web 2.0\" was first suggested.';
+  	var txt = 'However, in 2004, innovation rates climbed for several high-income countries when the call to \"Web 2.0\" was first suggested.';
   	var txt2 = 'Web 2.0 is a term used to describe an internet that emphasizes user-generated content, ease of use, a participatory culture and interoperability for end users.';
-  	var txt3 = 'This suggests that when the culture of the internet changed, its ability to positively impact innovation improved.';
+  	var txt3 = 'This suggests that when websites began promoting user-generated content and a participatory culture, the internet\'s ability to positively impact innovation improved.';
 
   	//add info
   	d3.select('#whiteCanvas')
@@ -907,7 +907,8 @@ async function init() {
       .text('Internet Use and Innovation Rates by Country');
 
   var underText1 = 'In high-income countries today, the internet is a vital tool for sparking new ideas, researching others\' findings, and establishing new business ventures.';
-  var underText2 = 'But is access to the internet enough to spark innovation in lower income countries?';
+  var underText2 = 'Over the last two decades, has improved internet adoption contributed to higher rates of innovation?  Is access to the internet alone enough to spark innovation in lower income countries?'
+  //var underText3 = 'Is access to the internet alone enough to spark innovation in lower income countries?';
   //add some text underneath
   d3.select('svg')
       .append('g')
@@ -927,7 +928,7 @@ async function init() {
       .attr('font-size','14px')
       .attr('font-style','italic')
       .attr('class','graphTitle')
-      .text(underText2);      
+      .text(underText2);          
   //paintSlider();
   //updateSlider(2016);
 
