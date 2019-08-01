@@ -904,10 +904,10 @@ async function init() {
       .attr('y',-65)
       .attr('font-size','24px')
       .attr('class','graphTitle')
-      .text('Internet Use and Innovation Rates by Country');
+      .text('Internet Use and Innovation Rates by Country (1993-2016)');
 
   var underText1 = 'In high-income countries today, the internet is a vital tool for sparking new ideas, researching others\' findings, and establishing new business ventures.';
-  var underText2 = 'Has improved internet adoption ver the last two decades contributed to higher rates of innovation?  Is access to the internet alone enough to spark innovation in lower income countries?'
+  var underText2 = 'Has improved internet adoption over the last two decades contributed to higher rates of innovation?  Is access to the internet alone enough to spark innovation in lower income countries?'
   //var underText3 = 'Is access to the internet alone enough to spark innovation in lower income countries?';
   //add some text underneath
   d3.select('svg')
@@ -917,7 +917,7 @@ async function init() {
       .attr('x',10)
       .attr('y',-45)
       .attr('font-size','14px')
-      .attr('class','graphTitle')
+      .attr('class','underText')
       .text(underText1);
   d3.select('svg')
       .append('g')
@@ -927,7 +927,7 @@ async function init() {
       .attr('y',-27)
       .attr('font-size','14px')
       .attr('font-style','italic')
-      .attr('class','graphTitle')
+      .attr('class','underText')
       .text(underText2);          
   //paintSlider();
   //updateSlider(2016);
