@@ -718,7 +718,9 @@ async function init() {
   	d3.selectAll('text.buttonText').remove();  	
   	selectedInd = 0;
   	filterDataset('',1993);
-  	paintSlider(); 	
+  	if (sliderPainted == 0) {
+  		paintSlider(); 	
+  	}
   }
 
   // Build the size legend
