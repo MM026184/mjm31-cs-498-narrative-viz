@@ -31,14 +31,24 @@
         display: block;
         z-index:1;
         position:absolute;
-        top:0;
+        top:2%;
         left:5%;
-      }      
+      }
+
+      #buttons {
+        display: block;
+        z-index:1;
+        position:absolute;
+        top:17%;
+        left:12%;
+      }
+
       #whiteCanvas {
       display:block; border:1px solid #ccc; position:absolute;
       top:5%; left:5%; width:90%; height:90%; background:#fff;
       z-index:-1;
       }
+
       h1 {
         text-align: center;
       }
@@ -86,11 +96,45 @@
 <body onload='init()'>
 <!--<h1>Hello, world!</h1>-->
 <div id='slider'></div>
+<div id="buttons">
+    <input name="updateButton1"
+    	   id="firstButton" 
+           type="button" 
+           value="1"  />
+    <input name="updateButton2" 
+    	   id="secondButton" 
+           type="button" 
+           value="2"  />
+    <input name="updateButton3" 
+    	   id="thirdButton" 
+           type="button" 
+           value="3"  />
+    <!--<input name="updateButton4" 
+    	   id="fourthButton" 
+           type="button" 
+           value="4"  />
+    <input name="updateButton5" 
+    	   id="fifthButton" 
+           type="button" 
+           value="5"  />-->
+</div>
+<!--<button type="button">1</button>-->
+<!--<button type="button">2</button>-->
+<!--<button type="button">3</button>-->
+<!--<button type="button">4</button>-->
 <svg id='whiteCanvas'></svg>
 <script>
 async function init() {
   const dataset = await d3.csv('https://mm026184.github.io/mjm31-cs-498-narrative-viz/files/internet_clean_data.csv');
   console.log(dataset);
+
+  //register button event listeners
+  var buttonListener1 = document.getElementById("firstButton").addEventListener("click",buttonClick1,false);
+  var buttonListener2 = document.getElementById("secondButton").addEventListener("click",buttonClick2,false);
+  var buttonListener3 = document.getElementById("thirdButton").addEventListener("click",buttonClick3,false);
+  //var buttonListener4 = document.getElementById("fourthButton").addEventListener("click",buttonClick4,false);
+  //var buttonListener5 = document.getElementById("fifthButton").addEventListener("click",buttonClick5,false);
+
   var whiteCanvas = document.getElementById('whiteCanvas');
 
   var translateOrigin = 100;
@@ -202,6 +246,13 @@ async function init() {
 
   }
 
+  function buildTooltip(d) {
+    return 'Country: ' + d.CountryName + '\n'
+      + 'Year: ' + d.Year + '\n'
+      + 'Population: ' + d.Population + '\n'
+      + '% Internet Use: ' + d.PercUsingInternet + '\n'
+      + 'Innovations per capita: ' + d.InnovationsPerThousand;
+  }
   function buildChartFromData(data){
 
     d3.selectAll('circle.bubbleData').remove();
@@ -231,7 +282,24 @@ async function init() {
       .style('fill',function(d) {return dataColor(d.IncomeGroup);})
       .on('mouseover',changeStrokeOnHover)
       .on('mouseout',changeBackStroke)
-      .on('click',handleClick);
+      .on('click',handleClick)
+      .append("title")
+      .text(function(d) { return buildTooltip(d); });
+
+    if (selectedInd == 1) {
+      d3.selectAll('text.circleYearLabels').remove();
+      circles.enter()
+        .append('text')
+        .attr('x',function(d) {return xScale(+d.PercUsingInternet);})
+        .attr('y',function(d) {return yScale(+d.InnovationsPerThousand) - 15;})
+        .attr('font-size', 10)
+        .attr('text-anchor','middle')
+        .attr('class','circleYearLabels')
+        .attr('text-align','center')
+        .text(function(d) {return d.Year;});        
+    } else {
+      d3.selectAll('text.circleYearLabels').remove();
+    } 
         
   }
 
@@ -240,91 +308,87 @@ async function init() {
     d3.select('text.centerText').text(value);
   }
 
-  var playData = function() {
-    startYear = 1993
-    endYear = 2016
+  var margin;
+  var width;
+  var height;
+  var startDate;
+  var endDate;
+  var svgSlider;
+  var x;
+  var slider;
+  var handle;
+  var label;
 
-    d3.selectAll('svg > *').remove();
+  function paintSlider() {
+    ////////// slider //////////
+    margin = {top:0, right:whiteCanvas.clientWidth/4, bottom:0, left:whiteCanvas.clientWidth/4};
+    width = whiteCanvas.clientWidth - margin.left - margin.right;
+    height = 180  - margin.top - margin.bottom; 
 
-    for (year = startYear; year < endYear; year++) {
-      nextYear = year + 1;
-      console.log(year);
-      buildChartFromData(year,nextYear,'');
-    }
+    startDate = 1993;
+    endDate = 2016; 
 
+    svgSlider = d3.select('#slider')
+      .append('svg')
+      .attr('width', whiteCanvas.clientWidth)
+      .attr('height', height);
+      
+    x = d3.scaleLinear()
+      .domain([startDate, endDate])
+      .range([0, width])
+      .clamp(true); 
+
+    slider = svgSlider.append('g')
+      .attr('class', 'slider')
+      .attr('transform', 'translate(' + margin.left + ',150)'); 
+
+    slider.append('line')
+        .attr('class', 'track')
+        .attr('x1', x.range()[0])
+        .attr('x2', x.range()[1])
+      .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+        .attr('class', 'track-inset')
+      .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
+        .attr('class', 'track-overlay')
+        .call(d3.drag()
+            .on('start.interrupt', function() { slider.interrupt(); })
+            .on('start drag', function() { updateSlider(x.invert(d3.event.x)); })); 
+
+    slider.insert('g', '.track-overlay')
+      .attr('class', 'ticks')
+      .attr('transform', 'translate(0,' + 18 + ')')
+      .selectAll('text')
+        .data(x.ticks(23))
+        .enter()
+        .append('text')
+        .attr('x', x)
+        .attr('y', 10)
+        .attr('text-anchor', 'middle')
+        .text(function(d) {return d }); 
+
+    handle = slider.insert('circle', '.track-overlay')
+      .attr('class', 'handle')
+      .attr('r', 9);  
+
+    label = slider.append('text')  
+      .attr('class', 'label')
+      .attr('text-anchor', 'middle')
+      .text(startDate)
+      .attr('transform', 'translate(0,' + (-15) + ')');
   }
 
+  var messageShownInd = 0;
 
-  filterDataset('',2016);
-  d3.select('svg')
-      .append('g')
-      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
-      .append('text')
-      .attr('x',(whiteCanvas.clientWidth-(translateOrigin+50))/2)
-      .attr('y', whiteCanvas.clientHeight/2 - translateOrigin)
-      .attr('font-size','48px')
-      .attr('text-anchor','middle')
-      .attr('fill','#C0C0C0')
-      .attr('opacity',0.65)
-      .attr('class','centerText')
-      .text(2016);  
+  function showMessage() {
+  	messageShownInd = 1;
+  	//TODO add message explaining that click = view countries data history and hover = get additional details
+  }
 
-  ////////// slider //////////
-  var margin = {top:0, right:whiteCanvas.clientWidth/4, bottom:0, left:whiteCanvas.clientWidth/4},
-      width = whiteCanvas.clientWidth - margin.left - margin.right,
-      height = 180  - margin.top - margin.bottom;
+  function removeMessage() {
+  	//function to remove message
+  }
 
-  var startDate = 1993,
-      endDate = 2016;
-
-  var svgSlider = d3.select('#slider')
-    .append('svg')
-    .attr('width', whiteCanvas.clientWidth)
-    .attr('height', height);
-    
-  var x = d3.scaleLinear()
-    .domain([startDate, endDate])
-    .range([0, width])
-    .clamp(true);
-
-  var slider = svgSlider.append('g')
-    .attr('class', 'slider')
-    .attr('transform', 'translate(' + margin.left + ',150)');
-
-  slider.append('line')
-      .attr('class', 'track')
-      .attr('x1', x.range()[0])
-      .attr('x2', x.range()[1])
-    .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-      .attr('class', 'track-inset')
-    .select(function() { return this.parentNode.appendChild(this.cloneNode(true)); })
-      .attr('class', 'track-overlay')
-      .call(d3.drag()
-          .on('start.interrupt', function() { slider.interrupt(); })
-          .on('start drag', function() { updateSlider(x.invert(d3.event.x)); }));
-
-  slider.insert('g', '.track-overlay')
-    .attr('class', 'ticks')
-    .attr('transform', 'translate(0,' + 18 + ')')
-    .selectAll('text')
-      .data(x.ticks(23))
-      .enter()
-      .append('text')
-      .attr('x', x)
-      .attr('y', 10)
-      .attr('text-anchor', 'middle')
-      .text(function(d) {return d });
-
-  var handle = slider.insert('circle', '.track-overlay')
-    .attr('class', 'handle')
-    .attr('r', 9);
-
-  var label = slider.append('text')  
-    .attr('class', 'label')
-    .attr('text-anchor', 'middle')
-    .text(startDate)
-    .attr('transform', 'translate(0,' + (-15) + ')');
-
+  //Also need to add message explaining how to return to cross-country view upon selection of a specific year for a country in single country view
   function updateSlider(h) {
     selectedInd = 0;
     
@@ -333,6 +397,10 @@ async function init() {
   
     var l = Math.round(h);
   
+  	removeMessage();
+  	if (l == 2016 && messageShownInd == 0) {
+  		showMessage();
+  	}
     label
       .attr('x', x(h))
       .text(l);
@@ -340,6 +408,50 @@ async function init() {
     // filter data set and redraw plot
     filterDataset('',l);
   }
+
+//  function updateYear(y) {
+//  	filterDataset('',y);
+//  }
+//  setTimeout(updateYear,1000);//
+
+//  function playData(){//
+
+//  	y = 1994
+//  	filterDataset('',1993);//
+
+//  	for (y = 1994; y < 2017; y++) {
+//  		updateYear(y);
+//  	}
+//  }
+  var sliderPainted = 0;
+
+  function buttonClick1() {
+  	selectedInd = 1;
+  	filterDataset('Korea, Rep.',2100);
+  }
+
+  function buttonClick2() {
+  	selectedInd = 1;
+  	filterDataset('Ukraine',2100);
+  }
+
+  function buttonClick3() {
+  	selectedInd = 0;
+  	filterDataset('',1993);
+  	if (sliderPainted == 0) {
+	  	paintSlider();
+  		sliderPainted = 1;
+  	}
+  }
+
+  function buttonClick4() {
+  	//playData();
+  }
+
+  function buttonClick5() {
+  		d3.selectAll('circle.bubbleData').remove();
+  }
+
 
   // Build the size legend
   var sizeLegendVals = [1400000000,(1400000000*0.5),(1400000000*0.1),(1400000000*0.01)] 
@@ -463,8 +575,58 @@ async function init() {
       //.attr('class','centerText')
       .text('Income Group');    
 
+  filterDataset('',2016);
+  //add first center text
+  d3.select('svg')
+      .append('g')
+      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',(whiteCanvas.clientWidth-(translateOrigin+50))/2)
+      .attr('y', whiteCanvas.clientHeight/2 - translateOrigin)
+      .attr('font-size','48px')
+      .attr('text-anchor','middle')
+      .attr('fill','#C0C0C0')
+      .attr('opacity',0.65)
+      .attr('class','centerText')
+      .text(2016);
 
-  updateSlider(2016);
+  //add graph title
+  d3.select('svg')
+      .append('g')
+      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',10)
+      .attr('y',-65)
+      .attr('font-size','24px')
+      .attr('class','graphTitle')
+      .text('Internet Use and Innovation Rates by Country');
+
+  var underText1 = 'In high-income countries today, the internet is a vital tool for sparking new ideas, researching others\' findings, and establishing new business ventures.';
+  var underText2 = 'But is access to the internet enough to spark innovation in lower income countries?';
+  //add some text underneath
+  d3.select('svg')
+      .append('g')
+      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',10)
+      .attr('y',-45)
+      .attr('font-size','14px')
+      .attr('class','graphTitle')
+      .text(underText1);
+  d3.select('svg')
+      .append('g')
+      .attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',10)
+      .attr('y',-27)
+      .attr('font-size','14px')
+      .attr('font-style','italic')
+      .attr('class','graphTitle')
+      .text(underText2);      
+  //paintSlider();
+  //updateSlider(2016);
+
+  
 }
 </script>
 </body>
