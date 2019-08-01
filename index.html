@@ -120,7 +120,7 @@
     <input name="updateButton6" 
     	   id="sixthButton" 
            type="button" 
-           value="6"  />           
+           value="Explore"  />           
 </div>
 <!--<button type="button">1</button>-->
 <!--<button type="button">2</button>-->
@@ -312,7 +312,7 @@ async function init() {
     console.log('sliderPainted: ' + sliderPainted);
     buildChartFromData(newData);
 
-  	if (year == 2016 && circleMessageShownInd == 0 && sliderPainted == 1) {
+  	if (circleMessageShownInd == 0 && sliderPainted == 1) {
   		showCircleMessage();
   	} 
 
@@ -717,10 +717,11 @@ async function init() {
   function buttonClick6() {
   	d3.selectAll('text.buttonText').remove();  	
   	selectedInd = 0;
-  	filterDataset('',1993);
   	if (sliderPainted == 0) {
   		paintSlider(); 	
   	}
+  	filterDataset('',1993);
+  	updateSlider(1993);
   }
 
   // Build the size legend
@@ -775,16 +776,6 @@ async function init() {
 
   //size legend label
   var keyDiameter = rScale(1400000000);
-
-  /*d3.select('#whiteCanvas')
-    .append('g')
-    .selectAll('legend')
-    .append('text')
-    .attr('x', whiteCanvas.clientWidth - translateOrigin)
-    .attr('y', translateOrigin+10)    
-    .style('font-size', 12)
-    .text('Population')
-    .attr('text-align','center');*/
 
   d3.select('#whiteCanvas')
       .append('g')
@@ -844,6 +835,62 @@ async function init() {
       //.attr('opacity',0.65)
       //.attr('class','centerText')
       .text('Income Group');    
+
+
+  d3.select('#whiteCanvas')
+      .append('g')
+      //.attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',translateOrigin-80)
+      .attr('y', whiteCanvas.clientHeight - translateOrigin - 40 + 30 + 40 + 15)  
+      .attr('font-size','12px')
+      .attr('text-anchor','left')
+      .attr('class','innovationDef')
+      .attr('font-style','italic')
+      //.attr('fill','#C0C0C0')
+      //.attr('opacity',0.65)
+      //.attr('class','centerText')
+      .text('Innovations Definition');
+
+  d3.select('#whiteCanvas')
+      .append('g')
+      //.attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',translateOrigin-80)
+      .attr('y', whiteCanvas.clientHeight - translateOrigin - 25 + 30 + 40 + 15)  
+      .attr('font-size','10px')
+      .attr('text-anchor','left')
+      .attr('class','innovationDef')
+      //.attr('fill','#C0C0C0')
+      //.attr('opacity',0.65)
+      //.attr('class','centerText')
+      .text('Total scientific/technical journal articles');
+  d3.select('#whiteCanvas')
+      .append('g')
+      //.attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',translateOrigin-80)
+      .attr('y', whiteCanvas.clientHeight - translateOrigin - 25 + 12.5 + 30 + 40 + 15)  
+      .attr('font-size','10px')
+      .attr('text-anchor','left')
+      .attr('class','innovationDef')
+      //.attr('fill','#C0C0C0')
+      //.attr('opacity',0.65)
+      //.attr('class','centerText')
+      .text('+ Total industrial design applications');         
+  d3.select('#whiteCanvas')
+      .append('g')
+      //.attr('transform','translate(' + translateOrigin+ ',' + translateOrigin + ')')
+      .append('text')
+      .attr('x',translateOrigin-80)
+      .attr('y', whiteCanvas.clientHeight - translateOrigin - 25 + 12.5 + 12.5 + 30 + 40 + 15)  
+      .attr('font-size','10px')
+      .attr('text-anchor','left')
+      .attr('class','innovationDef')
+      //.attr('fill','#C0C0C0')
+      //.attr('opacity',0.65)
+      //.attr('class','centerText')
+      .text('+ Total patent applications');
 
   filterDataset('',2016);
   //add first center text
